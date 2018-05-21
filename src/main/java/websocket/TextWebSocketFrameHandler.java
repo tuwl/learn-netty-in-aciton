@@ -28,7 +28,13 @@ public class TextWebSocketFrameHandler extends SimpleChannelInboundHandler<TextW
         }
     }
 
+    @Override
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        group.writeAndFlush(new TextWebSocketFrame("client" + ctx.channel() + "left"));
+    }
+
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame textWebSocketFrame) throws Exception {
+        group.writeAndFlush(new TextWebSocketFrame("client" + channelHandlerContext.channel()));
         group.writeAndFlush(textWebSocketFrame.retain());
     }
 }
